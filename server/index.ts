@@ -35,22 +35,18 @@ const route = app
       const db = drizzle(client);
 
       const body = await c.req.json();
-      console.log("Received body:", body);
 
       if (!Array.isArray(body)) {
-        console.log("Invalid input: not an array");
         return c.json({ error: "Invalid input: expected array of items" }, 400);
       }
 
       const itemsToSync = body;
-      console.log("Processing items:", itemsToSync);
 
       // Process items in batch
       const results = await Promise.all(
         itemsToSync.map(async (item) => {
           try {
             if (!item.name) {
-              console.log("Invalid item, missing name:", item);
               return { id: item.id, status: "error", error: "Missing name" };
             }
 
@@ -59,7 +55,6 @@ const route = app
               name: item.name,
             });
 
-            console.log("Inserted item:", item.name);
             return { id: item.id, status: "success" };
           } catch (error) {
             console.error("Error inserting item:", error);
@@ -68,7 +63,6 @@ const route = app
         })
       );
 
-      console.log("Sync results:", results);
       return c.json({
         success: true,
         results,
@@ -95,7 +89,6 @@ const route = app
       .where(eq(items.id, id))
       .returning();
 
-    console.log("Sync results:", deletedItem);
     return c.json({
       success: true,
       result: deletedItem,

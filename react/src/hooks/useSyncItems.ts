@@ -12,10 +12,7 @@ export const useSyncItems = () => {
     mutationFn: async (items: any[]) => {
       const itemsToSync = items.filter((item) => item.syncStatus === "pending");
 
-      console.log("Items to sync:", itemsToSync);
       if (itemsToSync.length === 0) return;
-
-      console.log("Sending items to sync:", itemsToSync);
 
       // Prepare items for sync by only including necessary fields
       const cleanItems = itemsToSync.map((item) => ({
@@ -28,7 +25,6 @@ export const useSyncItems = () => {
       });
 
       const { success, results } = (await response.json()) as any;
-      console.log("Response data:", { success, results });
 
       if (success) {
         // Update local items with sync status and server-generated IDs
@@ -55,7 +51,6 @@ export const useSyncItems = () => {
             }
           )
         );
-        console.log("Updated items:", updates);
 
         // Trigger a refresh of all items
         const allItems = await db.items.toArray();
@@ -63,12 +58,6 @@ export const useSyncItems = () => {
       } else {
         throw new Error("Failed to sync items");
       }
-    },
-    onSuccess: () => {
-      console.log("Sync completed successfully");
-    },
-    onError: (error) => {
-      console.error("Sync failed:", error);
-    },
+    }
   });
 };

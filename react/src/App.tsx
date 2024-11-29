@@ -90,7 +90,7 @@ const App = () => {
 
   return (
     <div className="flex flex-col w-full justify-center items-center p-12">
-      <div className="flex flex-col justify-center items-start max-w-lg">
+      <div className="flex flex-col justify-center items-start max-w-3xl">
         <div className="flex justify-between">
           <h1 className="text-2xl font-medium">
             Local-First React App with TanStack Query + Hono RPC Backend
