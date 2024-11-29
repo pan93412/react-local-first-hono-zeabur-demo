@@ -88,45 +88,17 @@ const route = app
     const client = new Pool({ connectionString: process.env.DATABASE_URL });
     const db = drizzle(client);
 
-    const body = await c.req.json();
+    const { id } = await c.req.json();
 
-    console.log("Received DELETE body:", body);
+    const deletedItem = await db
+      .delete(items)
+      .where(eq(items.id, id))
+      .returning();
 
-    if (!Array.isArray(body)) {
-      console.log("Invalid input: not an array");
-      return c.json({ error: "Invalid input: expected array of items" }, 400);
-    }
-
-    const itemsToSync = body;
-    console.log("Processing items:", itemsToSync);
-
-    // Process items in batch
-    const results = await Promise.all(
-      itemsToSync.map(async (item) => {
-        try {
-          if (!item.id) {
-            console.log("Invalid item, missing id:", item);
-            return { id: item.id, status: "error", error: "Missing id" };
-          }
-
-          const deletedItem = await db
-            .delete(items)
-            .where(eq(items.id, item.id))
-            .returning();
-
-          console.log("Deleted item:", deletedItem);
-          return { id: item.id, status: "success" };
-        } catch (error) {
-          console.error("Error deleting item:", error);
-          return { id: item.id, status: "error" };
-        }
-      })
-    );
-
-    console.log("Sync results:", results);
+    console.log("Sync results:", deletedItem);
     return c.json({
       success: true,
-      results,
+      result: deletedItem,
     });
   });
 

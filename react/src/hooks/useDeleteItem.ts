@@ -1,6 +1,8 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { hc } from "hono/client";
+import { AppType } from "../../../server";
 import db from "@/local/db";
 import { deleteFromDB } from "@/local/sync";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Item {
   id: string;
@@ -18,6 +20,7 @@ interface DeletedItem {
   syncStatus: "pending";
 }
 
+const client = hc<AppType>("/");
 
 export const useDeleteItem = () => {
   const queryClient = useQueryClient();
@@ -41,6 +44,10 @@ export const useDeleteItem = () => {
         await db.items.delete(id);
         // Store in deletions table
         await db.deletions.add(deletedItem);
+
+        await client.api.items.delete.$post({
+          json: { id },
+        });
 
         // Refresh local items
         const items = (await db.items.toArray()) as Item[];
