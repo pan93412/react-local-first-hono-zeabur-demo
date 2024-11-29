@@ -131,4 +131,5 @@ const route = app
   });
 
 export type AppType = typeof route;
+
 export default app;
