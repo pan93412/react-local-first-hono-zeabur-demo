@@ -1,17 +1,43 @@
 import { Pool } from "@neondatabase/serverless";
+import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { Hono } from "hono";
 import { items } from "./db/schema";
-import { eq } from "drizzle-orm";
 
 const app = new Hono();
 
+// app.use("*", clerkMiddleware());
+
 const route = app
   .basePath("/api")
+  // .get("/protected", (c) => {
+  //   try {
+  //     const auth = getAuth(c);
+
+  //     console.log("Auth check details:", {
+  //       userId: auth?.userId,
+  //       sessionId: auth?.sessionId,
+  //       orgId: auth?.orgId,
+  //       fullAuthObject: auth,
+  //     });
+
+  //     if (!auth?.userId) {
+  //       console.log("No user ID found, returning 401");
+  //       return c.json({ error: "Unauthorized" }, 401);
+  //     }
+
+  //     return c.json({
+  //       message: "Protected endpoint",
+  //       userId: auth?.userId,
+  //     });
+  //   } catch (error) {
+  //     console.error("Unexpected error in protected route:", error);
+  //     return c.json({ error: "Internal Server Error" }, 500);
+  //   }
+  // })
   .get("/items", async (c) => {
     try {
       const client = new Pool({ connectionString: process.env.DATABASE_URL });
-
       const db = drizzle(client);
 
       const result = await db.select().from(items);

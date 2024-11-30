@@ -1,7 +1,7 @@
+import db from "@/local/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { hc } from "hono/client";
 import { AppType } from "../../../server";
-import db from "@/local/db";
 
 const client = hc<AppType>("/");
 
@@ -28,7 +28,7 @@ export const useSyncItems = () => {
 
       if (success) {
         // Update local items with sync status and server-generated IDs
-        const updates = await Promise.all(
+        await Promise.all(
           results.map(
             async (result: { id: number; status: string }, index: number) => {
               if (result.status === "success") {

@@ -1,16 +1,24 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useDeleteItem } from "@/hooks/useDeleteItem";
+import { useSyncItems } from "@/hooks/useSyncItems";
+import db from "@/local/db";
+// import { ProtectedRoute } from "@/protected-route";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import { useDeleteItem } from "./hooks/useDeleteItem";
-import { useSyncItems } from "./hooks/useSyncItems";
-import db from "./local/db";
 
-const App = () => {
+export const Route = createFileRoute("/")({
+  component: Index,
+  ssr: true
+});
+
+function Index() {
   const [name, setName] = useState("");
   const { mutate: syncItems } = useSyncItems();
   const { mutate: deleteItem } = useDeleteItem();
   const queryClient = useQueryClient();
+
 
   // Use React Query to manage local items state
   const { data: localItems = [] } = useQuery({
@@ -89,6 +97,7 @@ const App = () => {
   ).length;
 
   return (
+    // <ProtectedRoute>
     <div className="flex flex-col w-full justify-center items-center p-12">
       <div className="flex flex-col justify-center items-start max-w-3xl">
         <div className="flex justify-between">
@@ -122,13 +131,12 @@ const App = () => {
               <div className="flex gap-2 items-center">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`inline-flex h-2 w-2 rounded-full ${
-                      item.syncStatus === "synced"
-                        ? "bg-green-500"
-                        : item.syncStatus === "pending"
+                    className={`inline-flex h-2 w-2 rounded-full ${item.syncStatus === "synced"
+                      ? "bg-green-500"
+                      : item.syncStatus === "pending"
                         ? "bg-yellow-500"
                         : "bg-red-500"
-                    }`}
+                      }`}
                     title={`Sync Status: ${item.syncStatus}`}
                   />
                 </div>
@@ -144,7 +152,6 @@ const App = () => {
         </ul>
       </div>
     </div>
+    // </ProtectedRoute>
   );
-};
-
-export default App;
+}
