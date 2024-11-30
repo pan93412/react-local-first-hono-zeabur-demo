@@ -20,7 +20,7 @@ export const Route = createRootRoute({
         </div>
         <div className="flex gap-2 justify-center items-center text-sm">
           <SignedIn>
-            <UserButton afterSignOutUrl="/sign-in" />
+            <UserButton />
           </SignedIn>
           <SignedOut>
             <Link to="/sign-in" className="[&.active]:font-bold text-sm">

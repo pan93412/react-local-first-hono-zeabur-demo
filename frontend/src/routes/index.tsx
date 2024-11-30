@@ -120,7 +120,7 @@ function Index() {
             Sync to Server {pendingCount > 0 && `(${pendingCount} pending)`}
           </Button>
         </div>
-        {localItems.length > 0 && <h2 className="text-lg">Items</h2>}
+        {localItems.length > 0 && <h2 className="text-lg mb-2">Items</h2>}
         <ul className="space-y-2 w-full">
           {localItems.map((item, index) => (
             <li

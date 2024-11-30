@@ -23,7 +23,6 @@ export const useSyncItems = () => {
       const response = await client.api.items.$post({
         json: cleanItems,
       });
-
       const { success, results } = (await response.json()) as any;
 
       if (success) {
@@ -58,6 +57,6 @@ export const useSyncItems = () => {
       } else {
         throw new Error("Failed to sync items");
       }
-    }
+    },
   });
 };
